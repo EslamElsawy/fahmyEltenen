@@ -1,9 +1,14 @@
+'''
+Created on Mar 22, 2013
+
+@author: Ahmed
+'''
 from numpy import *;
 from matplotlib import *;
 from matplotlib.pyplot import *;
 from matplotlib.image import *;
 #from PIL import Image;
-
+#
 
 #im = array(Image.open("testFile//image2.pgm"));
 #print im.shape
@@ -27,7 +32,7 @@ def eclidDistance(image1,image2):
     dist = 0;
     for i in range(0,112):
         for j in range(0,92):
-            dist= dist + abs(image1[i][j]-image2[i][j]);
+            dist= dist + sqrt(abs(image1[i][j]-image2[i][j]));
     return dist;
 
 def manhattenDistance(image1,image2):
@@ -35,7 +40,6 @@ def manhattenDistance(image1,image2):
     for i in range(0,112):
         for j in range(0,92):
             dist= dist + abs(image1[i][j]-image2[i][j]);
-    print dist
     return dist;
 
 
@@ -45,20 +49,9 @@ for i in range(0,400):
         if(i == j):
             AdjMatrix[i][j]=0;
         else:
-            AdjMatrix[i][j]=manhattenDistance(myImages[i],myImages[j]);
+            AdjMatrix[i][j]=manhattenDistance(myImages[i],myImages[j]);    
 
-print AdjMatrix;
-        
-
-        
-#Fahmy graph creation
-graph = []
-for i in xrange(400):
-    graph.append([])
-    for j in xrange(400):
-        if(i == j):            
-            graph[i].append(0)
-        else:
-            graph[i].append(i+j)
-
-print graph  
+print AdjMatrix;            
+savetxt("Adjacency Matrix.txt",AdjMatrix)
+new_data = np.loadtxt('Adjacency Matrix.txt')
+print new_data
