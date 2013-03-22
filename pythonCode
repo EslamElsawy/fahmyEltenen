@@ -121,13 +121,14 @@ def draw_graph(graph):
     # add nodes
     for node in nodes:
         G.add_node(node)
-        nx.draw(G)
-        plt.show()
+        for edge in graph:
+            G.add_edge(edge[0], edge[1])
+            nx.draw(G)
+            plt.show()
+#        nx.draw(G)
+#        plt.show()
     # add edges  
-    for edge in graph:
-        G.add_edge(edge[0], edge[1])
-        nx.draw(G)
-        plt.show()
+    
     # draw graph
     nx.draw(G)
     # show graph
