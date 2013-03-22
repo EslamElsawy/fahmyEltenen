@@ -70,3 +70,15 @@ def KNN(AdjMatrix,K):
             if(AdjMatrix[i][j]>threshold):
                 KNNAdjacencyList[i].append([j,AdjMatrix[i][j]]);
     return KNNAdjacencyList;
+
+def Eipson(AdjMatrix,E):
+    EpsAdjList=[]
+    for i in range(0,400):
+        EpsAdjList.append([])
+        for j in range(0,400):
+            if(AdjMatrix[i][j]<=E):
+                EpsAdjList[i].append([j,AdjMatrix[i][j]])
+    
+    return EpsAdjList
+
+
