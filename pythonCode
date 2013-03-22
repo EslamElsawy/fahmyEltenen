@@ -1,0 +1,19 @@
+from numpy import *;
+from matplotlib import *;
+from matplotlib.pyplot import *;
+from matplotlib.image import *;
+from PIL import Image;
+
+count = 0;
+myImages = random.rand(400,112,92);
+for i in range(1,41):
+    folderName = 's'+str(i);
+    for j in range(1,11):
+        fileName = str(j) + '.pgm';
+        im = array(Image.open("Faces//"+folderName+"//"+fileName));
+        myImages[count] = im;
+        count = count + 1;
+        
+print count
+
+        
