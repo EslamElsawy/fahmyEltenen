@@ -51,7 +51,22 @@ for i in range(0,400):
         else:
             AdjMatrix[i][j]=manhattenDistance(myImages[i],myImages[j]);    
 
+
 print AdjMatrix;            
 savetxt("Adjacency Matrix.txt",AdjMatrix)
 new_data = np.loadtxt('Adjacency Matrix.txt')
 print new_data
+
+
+def KNN(AdjMatrix,K):
+    KNNAdjacencyList = [];
+    for i in range(0,rows):
+        KNNAdjacencyList.append([]);
+        temp = deepcopy(AdjMatrix[i,:])
+        temp.sort();
+        temp2 = temp[::-1];
+        threshold = temp2[K];
+        for j in range(0,cols):
+            if(AdjMatrix[i][j]>threshold):
+                KNNAdjacencyList[i].append([j,AdjMatrix[i][j]]);
+    return KNNAdjacencyList;
