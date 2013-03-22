@@ -1,8 +1,14 @@
+'''
+Created on Mar 22, 2013
+
+@author: Ahmed
+'''
 from numpy import *;
 from matplotlib import *;
 from matplotlib.pyplot import *;
 from matplotlib.image import *;
-#from PIL import Image;
+import networkx as nx
+import matplotlib.pyplot as plt
 from copy import copy, deepcopy;
 
 
@@ -69,7 +75,7 @@ def KNN(AdjMatrix,K):
         for j in range(0,cols):
             if(AdjMatrix[i][j]<=threshold and i!=j):
 #                KNNAdjacencyList[i].append([j,AdjMatrix[i][j]]);
-                KNNAdjacencyList[i].append([j]);
+                KNNAdjacencyList[i].append(j);
     return KNNAdjacencyList;
 
 #epsilon
@@ -80,13 +86,13 @@ def Eipson(AdjMatrix,E):
         for j in range(0,400):
             if(AdjMatrix[i][j]<=E):
 #                EpsAdjList[i].append([j,AdjMatrix[i][j]])
-                EpsAdjList[i].append([j])
+                EpsAdjList[i].append(j)
     
     return EpsAdjList
 
 #KNN  & Epsion tests
-fromImage=150;
-toImage =160;
+fromImage=390;
+toImage =400;
 K = 6;
 Eps = 250000; 
 print 'KNN Test K='+str(K);              
@@ -98,6 +104,36 @@ print 'Epson Test e='+str(Eps)
 EpsilonNeighbors= Eipson(AdjMatrix, Eps);
 for i in range(fromImage,toImage):
     print EpsilonNeighbors[i];
+
+KNNgraph=[]
+for i in range(0,400):
+    x=KNNneighbors[i]
+#    x=EpsilonNeighbors[i]     
+    for j in range(0,len(x)):
+        KNNgraph.append((i,x[j]))
+
+#Graph Construction
+def draw_graph(graph):
+    # extract nodes from graph
+    nodes = set([n1 for n1, n2 in graph] + [n2 for n1, n2 in graph])
+    # create networkx graph
+    G=nx.Graph()
+    # add nodes
+    for node in nodes:
+        G.add_node(node)
+        nx.draw(G)
+        plt.show()
+    # add edges  
+    for edge in graph:
+        G.add_edge(edge[0], edge[1])
+        nx.draw(G)
+        plt.show()
+    # draw graph
+    nx.draw(G)
+    # show graph
+    plt.show()
+
+draw_graph(KNNgraph)
 
 #Swiss Roll
 def Generate_SwissRoll(n):
@@ -127,8 +163,8 @@ def Generate_SwissRoll(n):
         yArray[i].fill(y[i]);
     
     #draw Swiss roll
-#    ax.plot_surface(yArray,zArray,xArray,  rstride=4, cstride=4, color='b');
-#    show();   
+    ax.plot_surface(yArray,zArray,xArray,  rstride=4, cstride=4, color='b');
+    show();   
     
     #sample n points
     from random import randint;
@@ -149,10 +185,3 @@ def Generate_SwissRoll(n):
 #test swiss roll
 sampleNumber =100;   
 samplePoints = Generate_SwissRoll(sampleNumber); 
-       
-        
-
-
-
-
-        
