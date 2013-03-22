@@ -1,20 +1,17 @@
-'''
-Created on Mar 22, 2013
-
-@author: Ahmed
-'''
 from numpy import *;
 from matplotlib import *;
 from matplotlib.pyplot import *;
 from matplotlib.image import *;
 #from PIL import Image;
-#
+from copy import copy, deepcopy;
+
 
 #im = array(Image.open("testFile//image2.pgm"));
 #print im.shape
 #imshow(im,cmap='Greys_r');
 #show();
 
+#Read Images
 count = 0;
 myImages = random.rand(400,112,92);
 for i in range(1,41):
@@ -43,42 +40,119 @@ def manhattenDistance(image1,image2):
     return dist;
 
 
-AdjMatrix = random.rand(400,400);
-for i in range(0,400):
-    for j in range(0,400):
-        if(i == j):
-            AdjMatrix[i][j]=0;
-        else:
-            AdjMatrix[i][j]=manhattenDistance(myImages[i],myImages[j]);    
+
+#calculate Adj matrix & save
+#AdjMatrix = random.rand(rows,cols);
+#for i in range(0,rows):
+#    for j in range(0,cols):
+#        print str(i)+" "+str(j);
+#        if(i == j):
+#            AdjMatrix[i][j]=0;
+#        else:
+#            AdjMatrix[i][j]=manhattenDistance(myImages[i],myImages[j]);
+#savetxt("Adjacency Matrix.txt",AdjMatrix)
 
 
-print AdjMatrix;            
-savetxt("Adjacency Matrix.txt",AdjMatrix)
-new_data = np.loadtxt('Adjacency Matrix.txt')
-print new_data
+#Load DATA
+AdjMatrix = np.loadtxt('Adjacency Matrix.txt')
 
-
+#KNN
 def KNN(AdjMatrix,K):
+    rows = AdjMatrix.shape[0];
+    cols = AdjMatrix.shape[1];
     KNNAdjacencyList = [];
     for i in range(0,rows):
         KNNAdjacencyList.append([]);
         temp = deepcopy(AdjMatrix[i,:])
         temp.sort();
-        temp2 = temp[::-1];
-        threshold = temp2[K];
+        threshold = temp[K];
         for j in range(0,cols):
-            if(AdjMatrix[i][j]>threshold):
-                KNNAdjacencyList[i].append([j,AdjMatrix[i][j]]);
+            if(AdjMatrix[i][j]<=threshold and i!=j):
+#                KNNAdjacencyList[i].append([j,AdjMatrix[i][j]]);
+                KNNAdjacencyList[i].append([j]);
     return KNNAdjacencyList;
 
+#epsilon
 def Eipson(AdjMatrix,E):
     EpsAdjList=[]
     for i in range(0,400):
         EpsAdjList.append([])
         for j in range(0,400):
             if(AdjMatrix[i][j]<=E):
-                EpsAdjList[i].append([j,AdjMatrix[i][j]])
+#                EpsAdjList[i].append([j,AdjMatrix[i][j]])
+                EpsAdjList[i].append([j])
     
     return EpsAdjList
 
+#KNN  & Epsion tests
+fromImage=150;
+toImage =160;
+K = 6;
+Eps = 250000; 
+print 'KNN Test K='+str(K);              
+KNNneighbors = KNN(AdjMatrix,K);
+for i in range(fromImage,toImage):
+    print KNNneighbors[i];
 
+print 'Epson Test e='+str(Eps)
+EpsilonNeighbors= Eipson(AdjMatrix, Eps);
+for i in range(fromImage,toImage):
+    print EpsilonNeighbors[i];
+
+#Swiss Roll
+def Generate_SwissRoll(n):
+    from mpl_toolkits.mplot3d import Axes3D
+    #rcParams['legend.fontsize'] = 10
+    
+    fig = figure()
+    ax = fig.gca(projection='3d')    
+    
+    t = numpy.arange(0,1,0.01);
+    pi = math.pi;
+    helper = ((3*pi)/2)*(1+(2*t));
+    y = numpy.arange(0,1,0.01);
+    x =  helper*numpy.cos(helper);
+    z =  helper*numpy.sin(helper);
+    
+    xArray = random.rand(100,x.shape[0])
+    for i in range(0,100):
+        xArray[i]= deepcopy(x);
+    
+    zArray = random.rand(100,z.shape[0])
+    for i in range(0,100):
+        zArray[i]= deepcopy(z);
+        
+    yArray = random.rand(100,y.shape[0])
+    for i in range(0,100):
+        yArray[i].fill(y[i]);
+    
+    #draw Swiss roll
+#    ax.plot_surface(yArray,zArray,xArray,  rstride=4, cstride=4, color='b');
+#    show();   
+    
+    #sample n points
+    from random import randint;
+    samplePoints = random.rand(n,3);
+    visitedArray = zeros(10000).reshape(100,100);
+    for i in range(0,n):
+        visited = True;
+        rand1=0;rand2=0;
+        while(visited):
+            rand1 = randint(0,99);
+            rand2 = randint(0,99);
+            if(visitedArray[rand1][rand2]==0):
+                visitedArray[rand1][rand2]=1;
+                visited = False;
+        samplePoints[i]=([xArray[rand1][rand2],yArray[rand1][rand2],zArray[rand1][rand2]]);
+    return samplePoints;
+
+#test swiss roll
+sampleNumber =100;   
+samplePoints = Generate_SwissRoll(sampleNumber); 
+       
+        
+
+
+
+
+        
